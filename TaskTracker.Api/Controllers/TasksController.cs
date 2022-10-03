@@ -9,10 +9,10 @@ namespace TaskTracker.Api.Controllers
     [Route("[controller]")]
     public class TasksController : ControllerBase
     {
-        private readonly ILogger logger;
+        private readonly ILogger<TasksController> logger;
         private readonly TaskTrackerDbContext context;
-        
-        public TasksController(ILogger logger, TaskTrackerDbContext context)
+
+        public TasksController(ILogger<TasksController> logger, TaskTrackerDbContext context)
         {
             this.logger = logger;
             this.context = context;
@@ -27,19 +27,19 @@ namespace TaskTracker.Api.Controllers
             return Ok(task);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<Model.Task>>> GetTasksForProject (int projectId)
+        [HttpGet("ForProject/{id}")]
+        public async Task<ActionResult<IEnumerable<Model.Task>>> GetTasksForProject (int id)
         {
-            var tasks = context.Tasks.Where(t => t.ProjectId == projectId).OrderBy(t => t.CreatedDate).ToListAsync();
+            var tasks = await context.Tasks.Where(t => t.ProjectId == id).OrderBy(t => t.CreatedDate).ToListAsync();
             if (tasks == null)
                 return NotFound();
             return Ok(tasks);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<Model.Task>>> GetSubtasksForTask (int taskId)
+        [HttpGet("Subtasks/{id}")]
+        public async Task<ActionResult<IEnumerable<Model.Task>>> GetSubtasksForTask (int id)
         {
-            var tasks = context.Tasks.Where(t => t.FatherTaskId == taskId).OrderBy(t => t.CreatedDate).ToListAsync();
+            var tasks = await context.Tasks.Where(t => t.FatherTaskId == id).OrderBy(t => t.CreatedDate).ToListAsync();
             if (tasks == null)
                 return NotFound();
             return Ok(tasks);
@@ -65,7 +65,6 @@ namespace TaskTracker.Api.Controllers
         }
         
         [HttpPut("{id}")]
-
         public async Task<ActionResult<Model.Task>> UpdateTask(int id, Model.Task task)
         {
             if (id == task.Id)

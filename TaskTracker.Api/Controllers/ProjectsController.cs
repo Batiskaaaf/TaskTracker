@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskTracker.Data;
 using TaskTracker.Model;
+using TaskTracker.Model.DTO;
 
 namespace TaskTracker.Api.Controllers
 {
@@ -13,41 +15,52 @@ namespace TaskTracker.Api.Controllers
     {
         private readonly ILogger<ProjectsController> logger;
         private readonly TaskTrackerDbContext context;
+        private readonly IMapper mapper;
 
         public ProjectsController(TaskTrackerDbContext context
-                                ,ILogger<ProjectsController> logger)
+                                ,ILogger<ProjectsController> logger
+                                ,IMapper mapper)
         {
             this.context = context;
             this.logger = logger;
+            this.mapper = mapper;
         }
+
+        // GET / Projects
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Project>>> GetProjects()
+        public async Task<ActionResult<IEnumerable<ProjectDTO>>> GetProjects()
         {
             var projects = await context.Projects.ToListAsync();
             if (projects == null)
                 return NotFound();
-            return Ok(projects);
+            var projectsDTO = projects.Select(x => mapper.Map<ProjectDTO>(x));
+            return Ok(projectsDTO);
         }
 
+        // GET / Projects/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<Project>> GetProject(int id)
+        public async Task<ActionResult<ProjectDTO>> GetProject(int id)
         {
             var project = await context.Projects.FindAsync(id);
             if (project == null)
                 return NotFound();
-            return Ok(project);
+            var projectDTO = mapper.Map<ProjectDTO>(project);
+            return projectDTO;
         }
 
+        // POST / Projects
         [HttpPost]
-        public async Task<ActionResult<Project>> CreateProject (Project project)
+        public async Task<ActionResult<ProjectDTO>> CreateProject (ProjectDTO projectDTO)
         {
+            var project = mapper.Map<Project>(projectDTO);
             context.Projects.Add(project);
             await context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetProject), new {id = project.Id}, project);
+            return CreatedAtAction(nameof(GetProject), new {id = project.Id}, projectDTO);
         }
 
+        // DELETE / Projects/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProject (int id)
+        public async Task<ActionResult> DeleteProject (int id)
         {
             var project = await context.Projects.FindAsync(id);
             if (project == null)
@@ -57,20 +70,21 @@ namespace TaskTracker.Api.Controllers
             return NoContent();
         }
 
+        // PUT / Projects/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult<Project>> UpdateProject (int id, Project project)
+        public async Task<ActionResult<ProjectDTO>> UpdateProject (int id, ProjectDTO projectDTO)
         {
-            if(id != project.Id)
+            if(id != projectDTO.Id)
                 return BadRequest();
-            var projectFromDb = await context.Projects.FindAsync(id);
-            if (projectFromDb == null)
+            var project = await context.Projects.FindAsync(id);
+            if (project == null)
                 return NotFound();
 
-            projectFromDb.Status = project.Status;
-            projectFromDb.Description = project.Description;
-            projectFromDb.StartDate = project.StartDate;
-            projectFromDb.DueDate = project.DueDate;
-            projectFromDb.Name = project.Name;
+            project.Status = projectDTO.Status;
+            project.Description = projectDTO.Description;
+            project.StartDate = projectDTO.StartDate;
+            project.DueDate = projectDTO.DueDate;
+            project.Name = projectDTO.Name;
 
             try
             {
@@ -81,7 +95,7 @@ namespace TaskTracker.Api.Controllers
                 return NotFound();
             }
 
-            return CreatedAtAction(nameof(GetProject), new { id = projectFromDb.Id }, projectFromDb);
+            return CreatedAtAction(nameof(GetProject), new { id = projectDTO.Id }, projectDTO);
 
         }
 

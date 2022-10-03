@@ -13,7 +13,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TaskTrackerDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("TaskTracker")));
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IDbSeeder, DbSeeder>();
+
 
 var app = builder.Build();
 
@@ -30,7 +32,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapControllers(); 
 
 app.Run();
 

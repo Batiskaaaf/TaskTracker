@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using TaskTracker.Model.DTO;
 using TaskTracker.Data.Repository.IRepository;
 using FluentAssertions;
+using System;
 
 namespace TaskTracker.Tests.Controller
 {
@@ -153,7 +154,7 @@ namespace TaskTracker.Tests.Controller
 
 
         [Fact]
-        public async void ProjectsController_Edit_ReturnsOk()
+        public async void ProjectsController_Edit_ReturnsCreatedAtAction()
         {
             int id = 1;
             var projectDto = A.Fake<ProjectDTO>();
@@ -165,6 +166,47 @@ namespace TaskTracker.Tests.Controller
             var result = await controller.Edit(id, projectDto);
 
             result.Result.Should().NotBeNull();
+            result.Result.Should().BeOfType(typeof(CreatedAtActionResult));
+        }
+
+        [Fact]
+        public async void ProjectsController_Edit_WhenNull_ReturnsBadRequestl()
+        {
+            int id = 1;
+            var controller = new ProjectsController(repo, mapper);
+
+            var result = await controller.Edit(id, null);
+
+            result.Result.Should().NotBeNull();
+            result.Result.Should().BeOfType(typeof(BadRequestResult));
+        }
+
+        [Fact]
+        public async void ProjectsController_Edit_WhenDifferentId_ReturnsBadRequest()
+        {
+            int id = 1;
+            var projectDto = A.Fake<ProjectDTO>();
+            projectDto.Id = 2;
+            var controller = new ProjectsController(repo, mapper);
+
+            var result = await controller.Edit(id, projectDto);
+
+            result.Result.Should().NotBeNull();
+            result.Result.Should().BeOfType(typeof(BadRequestResult));
+        }
+        [Fact]
+        public async void ProjectsController_Edit_WhenWrongId_ReturnsBadRequest()
+        {
+            int id = 1;
+            var projectDto = A.Fake<ProjectDTO>();
+            projectDto.Id = 1;
+            A.CallTo(() => repo.GetById(id)).Returns(null);
+            var controller = new ProjectsController(repo, mapper);
+
+            var result = await controller.Edit(id, projectDto);
+
+            result.Result.Should().NotBeNull();
+            result.Result.Should().BeOfType(typeof(NotFoundResult));
         }
     }
 }

@@ -97,8 +97,7 @@ namespace TaskTracker.Api.Controllers
                 return NotFound();
             }
 
-            return CreatedAtAction(nameof(Get), new { id = projectDTO.Id }, projectDTO);
-
+            return CreatedAtAction(nameof(Get), new { id = project.Id }, project);
         }
 
     }

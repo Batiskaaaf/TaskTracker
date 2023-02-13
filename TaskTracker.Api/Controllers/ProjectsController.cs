@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskTracker.Data;
+using TaskTracker.Data.Repository.IRepository;
 using TaskTracker.Model;
 using TaskTracker.Model.DTO;
 
@@ -13,70 +14,71 @@ namespace TaskTracker.Api.Controllers
     [Route("[controller]")]
     public class ProjectsController : ControllerBase
     {
-        private readonly ILogger<ProjectsController> logger;
-        private readonly TaskTrackerDbContext context;
+        private readonly IProjectRepository repo;
         private readonly IMapper mapper;
 
-        public ProjectsController(TaskTrackerDbContext context
-                                ,ILogger<ProjectsController> logger
+        public ProjectsController(IProjectRepository repository
                                 ,IMapper mapper)
         {
-            this.context = context;
-            this.logger = logger;
+            this.repo = repository;
             this.mapper = mapper;
         }
 
         // GET / Projects
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProjectDTO>>> GetProjects()
+        public async Task<ActionResult<IEnumerable<ProjectDTO>>> Get()
         {
-            var projects = await context.Projects.ToListAsync();
-            if (projects == null)
-                return NotFound();
-            var projectsDTO = projects.Select(x => mapper.Map<ProjectDTO>(x));
+            var projects = repo.GetAll();
+            var projectsDTO = mapper.Map<List<ProjectDTO>>(projects);
+
             return Ok(projectsDTO);
         }
 
         // GET / Projects/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProjectDTO>> GetProject(int id)
+        public async Task<ActionResult<ProjectDTO>> Get(int id)
         {
-            var project = await context.Projects.FindAsync(id);
+            var project = repo.GetById(id);
             if (project == null)
                 return NotFound();
+
             var projectDTO = mapper.Map<ProjectDTO>(project);
-            return projectDTO;
+            return Ok(projectDTO);
         }
 
         // POST / Projects
         [HttpPost]
-        public async Task<ActionResult<ProjectDTO>> CreateProject (ProjectDTO projectDTO)
+        public async Task<ActionResult> Create ([FromBody] ProjectDTO projectDTO)
         {
+            if (projectDTO == null)
+                return BadRequest(ModelState);
+
             var project = mapper.Map<Project>(projectDTO);
-            context.Projects.Add(project);
-            await context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetProject), new {id = project.Id}, projectDTO);
+            repo.Add(project);
+            repo.Save();
+            return Ok("Project Created Succesfully");
         }
 
         // DELETE / Projects/{id}
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteProject (int id)
+        public async Task<ActionResult> Delete (int id)
         {
-            var project = await context.Projects.FindAsync(id);
+            var project = repo.GetById(id);
             if (project == null)
                 return NotFound();
-            context.Projects.Remove(project);
-            await context.SaveChangesAsync();
-            return NoContent();
+
+            repo.Remove(project);
+            repo.Save();
+            return Ok("Project deleted succesfully");
         }
 
         // PUT / Projects/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult<ProjectDTO>> UpdateProject (int id, ProjectDTO projectDTO)
+        public async Task<ActionResult<ProjectDTO>> Edit (int id, [FromBody] ProjectDTO projectDTO)
         {
-            if(id != projectDTO.Id)
+            if(projectDTO == null || id != projectDTO.Id)
                 return BadRequest();
-            var project = await context.Projects.FindAsync(id);
+            var project = repo.GetById(id);
             if (project == null)
                 return NotFound();
 
@@ -88,14 +90,14 @@ namespace TaskTracker.Api.Controllers
 
             try
             {
-                await context.SaveChangesAsync();
+                repo.Save();
             }
-            catch (DbUpdateConcurrencyException) when (!context.Projects.Any(x => x.Id == id))
+            catch (DbUpdateConcurrencyException)
             {
                 return NotFound();
             }
 
-            return CreatedAtAction(nameof(GetProject), new { id = projectDTO.Id }, projectDTO);
+            return CreatedAtAction(nameof(Get), new { id = projectDTO.Id }, projectDTO);
 
         }
 

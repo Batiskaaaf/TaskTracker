@@ -4,9 +4,9 @@ using TaskTracker.Model.DTO;
 
 namespace TaskTracker.Api.Helpers
 {
-    public class Mapper : Profile
+    public class TaskTrackerMapper : Profile
     {
-        public Mapper()
+        public TaskTrackerMapper()
         {
             CreateMap<Project, ProjectDTO>().ReverseMap();
             CreateMap<Model.Task, TaskDTO>().ReverseMap();

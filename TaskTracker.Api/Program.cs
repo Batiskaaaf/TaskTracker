@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using TaskTracker.Data;
 using TaskTracker.Data.DbSeeder;
+using TaskTracker.Data.Repository;
+using TaskTracker.Data.Repository.IRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TaskTrackerDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("TaskTracker")));
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddDbContext<TaskTrackerDbContext>(options =>
+{
+    options.UseSqlServer();
+});
+
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IDbSeeder, DbSeeder>();
 

@@ -13,6 +13,6 @@ namespace TaskTracker.Data.Repository.IRepository
         void Save();
         Project GetById(int id);
         ICollection<Model.Task> GetProjectTasks(int id);
-        bool isExist(int id);
+        bool ProjectExist(int id);
     }
 }

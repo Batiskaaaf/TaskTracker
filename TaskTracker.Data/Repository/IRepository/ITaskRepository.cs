@@ -12,6 +12,7 @@ namespace TaskTracker.Data.Repository.IRepository
         void Update(Model.Task obj);
         void Save();
         Model.Task GetById(int id);
-        bool isExist(int id);
+        bool ProjectExist(int projectId);
+        bool TaskExist(int id);
     }
 }

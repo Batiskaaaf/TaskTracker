@@ -30,7 +30,7 @@ namespace TaskTracker.Data.Repository
             return db.Projects.Where(p => p.Id == id).Include(x => x.Tasks).FirstOrDefault().Tasks;
         }
 
-        public bool isExist(int id)
+        public bool ProjectExist(int id)
         {
             return db.Projects.Any(p => p.Id == id);
         }

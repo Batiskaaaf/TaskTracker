@@ -48,7 +48,7 @@ namespace TaskTracker.Api.Controllers
         [HttpGet("{id}/tasks")]
         public async Task<ActionResult<ICollection<TaskDTO>>> GetProjectTasks (int id)
         {
-            if (!repository.isExist(id))
+            if (!repository.ProjectExist(id))
                 return BadRequest();
 
             var tasks = repository.GetProjectTasks(id);
@@ -65,7 +65,7 @@ namespace TaskTracker.Api.Controllers
             var project = mapper.Map<Project>(projectDTO);
             repository.Add(project);
             repository.Save();
-            return Ok("Project Created Succesfully");
+            return Ok("Project created succesfully");
         }
 
         [HttpDelete("{id}")]
@@ -81,7 +81,7 @@ namespace TaskTracker.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<ProjectDTO>> Edit (int id, [FromBody] ProjectDTO projectDTO)
+        public async Task<ActionResult<ProjectDTO>> Update (int id, [FromBody] ProjectDTO projectDTO)
         {
             if(projectDTO == null || id != projectDTO.Id)
                 return BadRequest();
@@ -104,7 +104,7 @@ namespace TaskTracker.Api.Controllers
                 return NotFound();
             }
 
-            return CreatedAtAction(nameof(Get), new { id = project.Id }, project);
+            return Ok("Project edited succesfully");
         }
 
     }

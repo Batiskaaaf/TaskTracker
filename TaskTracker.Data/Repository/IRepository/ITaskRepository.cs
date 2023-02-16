@@ -7,12 +7,11 @@ using TaskTracker.Model;
 
 namespace TaskTracker.Data.Repository.IRepository
 {
-    public interface IProjectRepository : IRepository<Project>
+    public interface ITaskRepository : IRepository<Model.Task>
     {
-        void Update(Project obj);
+        void Update(Model.Task obj);
         void Save();
-        Project GetById(int id);
-        ICollection<Model.Task> GetProjectTasks(int id);
+        Model.Task GetById(int id);
         bool isExist(int id);
     }
 }

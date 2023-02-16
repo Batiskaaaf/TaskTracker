@@ -33,10 +33,4 @@ public class Task
     [ForeignKey("ProjectId")]
     public Project Project { get; set; }
 
-
-    public int? FatherTaskId { get; set; }
-
-    [ForeignKey("FatherTaskId")]
-    public Task FatherTask { get; set; }
-
 }

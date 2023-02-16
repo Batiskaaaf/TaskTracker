@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -10,29 +9,24 @@ using TaskTracker.Model;
 
 namespace TaskTracker.Data.Repository
 {
-    public class ProjectRepository : Repository<Project>, IProjectRepository
+    public class TaskRepository : Repository<Model.Task>, ITaskRepository
     {
 
         private readonly TaskTrackerDbContext db;
 
-        public ProjectRepository(TaskTrackerDbContext db) : base(db)
+        public TaskRepository(TaskTrackerDbContext db) : base(db)
         {
             this.db = db;
         }
 
-        public Project GetById(int id)
+        public Model.Task GetById(int id)
         {
             return GetFirstOrDefault(x => x.Id == id);
         }
 
-        public ICollection<Model.Task> GetProjectTasks(int id)
-        {
-            return db.Projects.Where(p => p.Id == id).Include(x => x.Tasks).FirstOrDefault().Tasks;
-        }
-
         public bool isExist(int id)
         {
-            return db.Projects.Any(p => p.Id == id);
+            return db.Tasks.Any(t => t.Id == id);
         }
 
         public void Save()
@@ -40,9 +34,9 @@ namespace TaskTracker.Data.Repository
             db.SaveChanges();
         }
 
-        public void Update(Project obj)
+        public void Update(Model.Task obj)
         {
-            db.Projects.Update(obj);
+            db.Tasks.Update(obj);
         }
     }
 }

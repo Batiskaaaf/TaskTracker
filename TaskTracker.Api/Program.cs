@@ -15,6 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TaskTrackerDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("TaskTracker")));
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddDbContext<TaskTrackerDbContext>(options =>
 {

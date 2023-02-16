@@ -36,7 +36,6 @@ namespace TaskTracker.Data.DbSeeder
                 Description = "First Task Subtask one Description",
                 Status = Constants.Task_NotStarted,
                 Project = project,
-                FatherTask = task1,
             };
             var subtask2 = new Model.Task()
             {
@@ -44,7 +43,6 @@ namespace TaskTracker.Data.DbSeeder
                 Description = "First Task Subtask two Description",
                 Status = Constants.Task_NotStarted,
                 Project = project,
-                FatherTask = task1,
             };            
             var task2 = new Model.Task()
             {

@@ -15,8 +15,5 @@ public class TaskDTO
     public DateTime? DueDate { get; set; }
 
     public int ProjectId { get; set; }
-
-    public int? FatherTaskId { get; set; }
-
 }
 

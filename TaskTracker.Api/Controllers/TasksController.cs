@@ -1,93 +1,50 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskTracker.Data;
+using TaskTracker.Data.Repository.IRepository;
 using TaskTracker.Model;
+using TaskTracker.Model.DTO;
 
 namespace TaskTracker.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class TasksController : ControllerBase
     {
-        private readonly ILogger<TasksController> logger;
-        private readonly TaskTrackerDbContext context;
+        private readonly ITaskRepository repository;
+        private readonly IMapper mapper;
 
-        public TasksController(ILogger<TasksController> logger, TaskTrackerDbContext context)
+        public TasksController(ITaskRepository repository, IMapper mapper)
         {
-            this.logger = logger;
-            this.context = context;
+            this.repository = repository;
+            this.mapper = mapper;
         }
 
+        // GET api/<TasksController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Model.Task>> GetTask(int id)
+        public string Get(int id)
         {
-            var task = await context.Tasks.FirstOrDefaultAsync(t => t.Id == id);
-            if (task == null)
-                return NotFound();
-            return Ok(task);
+            return "value";
         }
 
-        [HttpGet("ForProject/{id}")]
-        public async Task<ActionResult<IEnumerable<Model.Task>>> GetTasksForProject (int id)
-        {
-            var tasks = await context.Tasks.Where(t => t.ProjectId == id).OrderBy(t => t.CreatedDate).ToListAsync();
-            if (tasks == null)
-                return NotFound();
-            return Ok(tasks);
-        }
-
-        [HttpGet("Subtasks/{id}")]
-        public async Task<ActionResult<IEnumerable<Model.Task>>> GetSubtasksForTask (int id)
-        {
-            var tasks = await context.Tasks.Where(t => t.FatherTaskId == id).OrderBy(t => t.CreatedDate).ToListAsync();
-            if (tasks == null)
-                return NotFound();
-            return Ok(tasks);
-        }
-
+        // POST api/<TasksController>
         [HttpPost]
-        public async Task<ActionResult<Model.Task>> CreateTask (Model.Task task)
+        public void Post([FromBody] string value)
         {
-            context.Tasks.Add(task);
-            await context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetTask), new {id = task.Id}, task);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteTask (int id)
-        {
-            var task = await context.Tasks.FindAsync(id);
-            if (task == null)
-                return NotFound();
-            context.Tasks.Remove(task);
-            await context.SaveChangesAsync();
-            return NoContent();
-        }
-        
+        // PUT api/<TasksController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<Model.Task>> UpdateTask(int id, Model.Task task)
+        public void Put(int id, [FromBody] string value)
         {
-            if (id == task.Id)
-                return BadRequest();
-            var taskFromDb = await context.Tasks.FindAsync(id);
-            if (taskFromDb == null)
-                return NotFound();
-            
-            taskFromDb.Name = task.Name;
-            taskFromDb.Description = task.Description;
-            taskFromDb.StartDate = task.StartDate;
-            taskFromDb.DueDate = task.DueDate;
+        }
 
-            try
-            {
-                await context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException) when (!context.Tasks.Any(x => x.Id == id))
-            {
-                return NotFound();
-            }
-
-            return CreatedAtAction(nameof(GetTask), new { id = taskFromDb.Id }, taskFromDb);
+        // DELETE api/<TasksController>/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
         }
     }
 }

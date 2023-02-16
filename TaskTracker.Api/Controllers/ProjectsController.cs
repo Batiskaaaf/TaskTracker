@@ -6,39 +6,38 @@ using TaskTracker.Data;
 using TaskTracker.Data.Repository.IRepository;
 using TaskTracker.Model;
 using TaskTracker.Model.DTO;
+using System.Linq;
 
 namespace TaskTracker.Api.Controllers
 {
-    
+
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ProjectsController : ControllerBase
     {
-        private readonly IProjectRepository repo;
+        private readonly IProjectRepository repository;
         private readonly IMapper mapper;
 
         public ProjectsController(IProjectRepository repository
-                                ,IMapper mapper)
+                                , IMapper mapper)
         {
-            this.repo = repository;
+            this.repository = repository;
             this.mapper = mapper;
         }
 
-        // GET / Projects
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProjectDTO>>> Get()
         {
-            var projects = repo.GetAll();
+            var projects = repository.GetAll();
             var projectsDTO = mapper.Map<List<ProjectDTO>>(projects);
 
             return Ok(projectsDTO);
         }
 
-        // GET / Projects/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectDTO>> Get(int id)
         {
-            var project = repo.GetById(id);
+            var project = repository.GetById(id);
             if (project == null)
                 return NotFound();
 
@@ -46,7 +45,17 @@ namespace TaskTracker.Api.Controllers
             return Ok(projectDTO);
         }
 
-        // POST / Projects
+        [HttpGet("{id}/tasks")]
+        public async Task<ActionResult<ICollection<TaskDTO>>> GetProjectTasks (int id)
+        {
+            if (!repository.isExist(id))
+                return BadRequest();
+
+            var tasks = repository.GetProjectTasks(id);
+            var tasksDto = mapper.Map<ICollection<TaskDTO>>(tasks);
+            return Ok(tasksDto);
+        }
+
         [HttpPost]
         public async Task<ActionResult> Create ([FromBody] ProjectDTO projectDTO)
         {
@@ -54,31 +63,29 @@ namespace TaskTracker.Api.Controllers
                 return BadRequest(ModelState);
 
             var project = mapper.Map<Project>(projectDTO);
-            repo.Add(project);
-            repo.Save();
+            repository.Add(project);
+            repository.Save();
             return Ok("Project Created Succesfully");
         }
 
-        // DELETE / Projects/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete (int id)
         {
-            var project = repo.GetById(id);
+            var project = repository.GetById(id);
             if (project == null)
                 return NotFound();
 
-            repo.Remove(project);
-            repo.Save();
+            repository.Remove(project);
+            repository.Save();
             return Ok("Project deleted succesfully");
         }
 
-        // PUT / Projects/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult<ProjectDTO>> Edit (int id, [FromBody] ProjectDTO projectDTO)
         {
             if(projectDTO == null || id != projectDTO.Id)
                 return BadRequest();
-            var project = repo.GetById(id);
+            var project = repository.GetById(id);
             if (project == null)
                 return NotFound();
 
@@ -90,7 +97,7 @@ namespace TaskTracker.Api.Controllers
 
             try
             {
-                repo.Save();
+                repository.Save();
             }
             catch (DbUpdateConcurrencyException)
             {

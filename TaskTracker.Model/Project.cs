@@ -33,5 +33,5 @@ public class Project
     public DateTime? DueDate { get; set; }
 
 
-    public IEnumerable<Task> Tasks { get; set; }   
+    public ICollection<Task> Tasks { get; set; }   
 }

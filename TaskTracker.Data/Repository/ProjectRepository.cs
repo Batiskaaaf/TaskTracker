@@ -27,17 +27,7 @@ namespace TaskTracker.Data.Repository
 
         public ICollection<Model.Task> GetProjectTasks(int id)
         {
-            return db.Projects.Where(p => p.Id == id).Include(x => x.Tasks).FirstOrDefault().Tasks;
-        }
-
-        public bool ProjectExist(int id)
-        {
-            return db.Projects.Any(p => p.Id == id);
-        }
-
-        public void Save()
-        {
-            db.SaveChanges();
+            return GetFirstOrDefault(p => p.Id == id, "Tasks").Tasks;
         }
 
         public void Update(Project obj)

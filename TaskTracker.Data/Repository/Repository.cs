@@ -25,20 +25,57 @@ namespace TaskTracker.Data.Repository
             dbSet.Add(entity);
         }
 
+        public void AddRange(IEnumerable<T> entities)
+        {
+            dbSet.AddRange(entities);
+        }
+
+        public bool Exist(int id)
+        {
+            return dbSet.Find(id) != null;
+        }
+
         public IEnumerable<T> GetAll()
         {
             IQueryable<T> query = dbSet;
             return query.ToList();
         }
 
-        public T GetFirstOrDefault(Expression<Func<T, bool>> filter)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperies = null)
         {
             IQueryable<T> query = dbSet;
 
+            if (filter != null)
+                query = query.Where(filter);
+
+            if (includeProperies != null)
+            {
+                foreach (var property in includeProperies.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(property);
+                }
+            }
+            return query.ToList();
+        }
+
+        public T GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperies = null, bool tracked = true)
+        {
+            IQueryable<T> query = dbSet;
+
+            if (tracked)
+                query = dbSet;
+            else
+                query = dbSet.AsNoTracking();
+
             query = query.Where(filter);
-
+            if (includeProperies != null)
+            {
+                foreach (var property in includeProperies.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(property);
+                }
+            }
             return query.FirstOrDefault();
-
         }
 
         public void Remove(T entity)

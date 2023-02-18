@@ -10,9 +10,5 @@ namespace TaskTracker.Data.Repository.IRepository
     public interface ITaskRepository : IRepository<Model.Task>
     {
         void Update(Model.Task obj);
-        void Save();
-        Model.Task GetById(int id);
-        bool ProjectExist(int projectId);
-        bool TaskExist(int id);
     }
 }

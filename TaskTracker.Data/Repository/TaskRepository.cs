@@ -19,26 +19,6 @@ namespace TaskTracker.Data.Repository
             this.db = db;
         }
 
-        public Model.Task GetById(int id)
-        {
-            return GetFirstOrDefault(x => x.Id == id);
-        }
-
-        public void Save()
-        {
-            db.SaveChanges();
-        }
-
-        public bool ProjectExist(int projectId)
-        {
-            return db.Projects.Any(t => t.Id == projectId);
-        }
-
-        public bool TaskExist(int id)
-        {
-            return db.Tasks.Any(t => t.Id == id);
-        }
-
         public void Update(Model.Task obj)
         {
             db.Tasks.Update(obj);

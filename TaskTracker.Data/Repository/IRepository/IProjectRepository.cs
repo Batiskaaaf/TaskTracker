@@ -9,10 +9,8 @@ namespace TaskTracker.Data.Repository.IRepository
 {
     public interface IProjectRepository : IRepository<Project>
     {
-        void Update(Project obj);
-        void Save();
         Project GetById(int id);
         ICollection<Model.Task> GetProjectTasks(int id);
-        bool ProjectExist(int id);
+        void Update(Project obj);
     }
 }

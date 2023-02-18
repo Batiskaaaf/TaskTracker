@@ -13,12 +13,12 @@ namespace TaskTracker.Api.Controllers
     [Route("api/[controller]")]
     public class TasksController : ControllerBase
     {
-        private readonly ITaskRepository repository;
+        private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
 
-        public TasksController(ITaskRepository repository, IMapper mapper)
+        public TasksController(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            this.repository = repository;
+            this.unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
 
@@ -26,7 +26,7 @@ namespace TaskTracker.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskDTO>> Get(int id)
         {
-            var task = repository.GetById(id);
+            var task = unitOfWork.Task.GetFirstOrDefault(t => t.Id == id);
             if(task == null)
                 return NotFound();
             var taskDTO = mapper.Map<TaskDTO>(task);
@@ -35,17 +35,14 @@ namespace TaskTracker.Api.Controllers
 
         // POST api/<TasksController>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] TaskDTO taskDTO)
+        public async Task<ActionResult> Create([FromBody] TaskDTO taskDTO)
         {
             if (taskDTO == null)
                 return BadRequest(ModelState);
 
-            if (!repository.ProjectExist(taskDTO.ProjectId))
-                return NotFound("Project does not exist");
-
             var task = mapper.Map<Model.Task>(taskDTO);
-            repository.Add(task);
-            repository.Save();
+            unitOfWork.Task.Add(task);
+            unitOfWork.Save();
 
             return Ok("Task created succesfully");
         }
@@ -57,21 +54,17 @@ namespace TaskTracker.Api.Controllers
             if (taskDTO == null || id != taskDTO.Id)
                 return BadRequest(ModelState);
 
-            var task = repository.GetById(id);
-            if (task == null)
+            if(!unitOfWork.Task.Exist(id))
                 return NotFound();
 
-            task.Name = taskDTO.Name;
-            task.Description = taskDTO.Description;
-            task.Status = taskDTO.Status;
-            task.DueDate = taskDTO.DueDate;
-            task.StartDate = taskDTO.StartDate;
 
-            repository.Save();
+            var taskToUpdate = mapper.Map<Model.Task>(taskDTO);
+            unitOfWork.Task.Update(taskToUpdate);
+            unitOfWork.Save();
 
             try
             {
-                repository.Save();
+                unitOfWork.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -85,12 +78,12 @@ namespace TaskTracker.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var task = repository.GetById(id);
+            var task = unitOfWork.Task.GetFirstOrDefault(t => t.Id == id);
             if (task == null)
                 return NotFound();
 
-            repository.Remove(task);
-            repository.Save();
+            unitOfWork.Task.Remove(task);
+            unitOfWork.Save();
             return Ok("Task deleted succesfully");
         }
     }

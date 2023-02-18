@@ -20,10 +20,10 @@ namespace TaskTracker.Tests.Controller
     {
 
         private readonly IMapper mapper;
-        private readonly IProjectRepository repository;
+        private readonly IUnitOfWork unitOfWork;
         public ProjectsControllerTests()
         {
-            repository = A.Fake<IProjectRepository>();
+            unitOfWork = A.Fake<IUnitOfWork>();
             mapper = A.Fake<IMapper>();
         }          
 
@@ -34,7 +34,7 @@ namespace TaskTracker.Tests.Controller
             var projects = A.Fake<IEnumerator<Project>>();
             var projectsDTOList = A.Fake<List<ProjectDTO>>();
             A.CallTo(() => mapper.Map<List<ProjectDTO>>(projects)).Returns(projectsDTOList);
-            var controller = new ProjectsController(repository, mapper);
+            var controller = new ProjectsController(unitOfWork, mapper);
 
             //Act
             var result = await controller.Get();
@@ -54,9 +54,9 @@ namespace TaskTracker.Tests.Controller
             int id = 1;
             var project = A.Fake<Project>();
             var projectDTO = A.Fake<ProjectDTO>();
-            A.CallTo(() => repository.GetById(id)).Returns(project);
+            A.CallTo(() => unitOfWork.Project.GetById(id)).Returns(project);
             A.CallTo(() => mapper.Map<ProjectDTO>(project)).Returns(projectDTO);
-            var controller = new ProjectsController(repository,mapper);
+            var controller = new ProjectsController(unitOfWork,mapper);
 
             //Act
             var result = await controller.Get(id);
@@ -71,8 +71,8 @@ namespace TaskTracker.Tests.Controller
         {
             //Arrane
             int id = 1;
-            A.CallTo(() => repository.GetById(id)).Returns(null);
-            var controller = new ProjectsController(repository, mapper);
+            A.CallTo(() => unitOfWork.Project.GetById(id)).Returns(null);
+            var controller = new ProjectsController(unitOfWork, mapper);
 
             //Act
             var result = await controller.Get(id);
@@ -89,12 +89,12 @@ namespace TaskTracker.Tests.Controller
         public async void projectController_GetProjectTasks_ReturnOk()
         {
             int id = 0;
-            A.CallTo(() => repository.isExist(id)).Returns(true);
+            A.CallTo(() => unitOfWork.Project.Exist(id)).Returns(true);
             var tasks = A.Fake<ICollection<Model.Task>>();
             var tasksDTO = A.Fake<ICollection<TaskDTO>>();
-            A.CallTo(() => repository.GetProjectTasks(id)).Returns(tasks);
+            A.CallTo(() => unitOfWork.Project.GetProjectTasks(id)).Returns(tasks);
             A.CallTo(() => mapper.Map<ICollection<TaskDTO>>(tasks)).Returns(tasksDTO);
-            var controller = new ProjectsController(repository, mapper);
+            var controller = new ProjectsController(unitOfWork, mapper);
 
 
             var result = await controller.GetProjectTasks(id);
@@ -107,8 +107,8 @@ namespace TaskTracker.Tests.Controller
         public async void projectController_GetProjectTasks_ReturnsBadRequest()
         {
             int id = 0;
-            A.CallTo(() => repository.isExist(id)).Returns(false);
-            var controller = new ProjectsController(repository, mapper);
+            A.CallTo(() => unitOfWork.Project.Exist(id)).Returns(false);
+            var controller = new ProjectsController(unitOfWork, mapper);
 
             var result = await controller.GetProjectTasks(id);
 
@@ -127,7 +127,7 @@ namespace TaskTracker.Tests.Controller
             var projectDto = A.Fake<ProjectDTO>();
             var project = A.Fake<Project>();
             A.CallTo(() => mapper.Map<Project>(projectDto)).Returns(project);
-            var controller = new ProjectsController(repository, mapper);
+            var controller = new ProjectsController(unitOfWork, mapper);
 
 
             //Act
@@ -142,7 +142,7 @@ namespace TaskTracker.Tests.Controller
         public async void ProjectsController_Create_ReturnsBadRequest()
         {
             //Arrange
-            var controller = new ProjectsController(repository, mapper);
+            var controller = new ProjectsController(unitOfWork, mapper);
 
 
             //Act
@@ -161,8 +161,8 @@ namespace TaskTracker.Tests.Controller
             //Arrange
             int id = 1;
             var project = A.Fake<Project>();
-            A.CallTo(() => repository.GetById(id)).Returns(project);
-            var controller = new ProjectsController(repository, mapper);
+            A.CallTo(() => unitOfWork.Project.GetById(id)).Returns(project);
+            var controller = new ProjectsController(unitOfWork, mapper);
 
             //Act
             var result = await controller.Delete(id);
@@ -177,8 +177,8 @@ namespace TaskTracker.Tests.Controller
         {
             //Arrange
             int id = 0;
-            A.CallTo(() => repository.GetById(id)).Returns(null);
-            var controller = new ProjectsController(repository, mapper);
+            A.CallTo(() => unitOfWork.Project.GetById(id)).Returns(null);
+            var controller = new ProjectsController(unitOfWork, mapper);
 
             //Act
             var result = await controller.Delete(id);
@@ -191,26 +191,26 @@ namespace TaskTracker.Tests.Controller
 
 
         [Fact]
-        public async void ProjectsController_Edit_ReturnsCreatedAtAction()
+        public async void ProjectsController_Update_ReturnsCreatedAtAction()
         {
             int id = 1;
             var projectDto = A.Fake<ProjectDTO>();
             projectDto.Id = id;
             var project = A.Fake<Project>();
-            A.CallTo(() => repository.GetById(id)).Returns(project);
-            var controller = new ProjectsController(repository,mapper);
+            A.CallTo(() => unitOfWork.Project.GetById(id)).Returns(project);
+            var controller = new ProjectsController(unitOfWork,mapper);
 
             var result = await controller.Update(id, projectDto);
 
             result.Result.Should().NotBeNull();
-            result.Result.Should().BeOfType(typeof(CreatedAtActionResult));
+            result.Result.Should().BeOfType(typeof(OkObjectResult));
         }
 
         [Fact]
-        public async void ProjectsController_Edit_WhenNull_ReturnsBadRequestl()
+        public async void ProjectsController_Update_WhenNull_ReturnsBadRequestl()
         {
             int id = 1;
-            var controller = new ProjectsController(repository, mapper);
+            var controller = new ProjectsController(unitOfWork, mapper);
 
             var result = await controller.Update(id, null);
 
@@ -219,12 +219,12 @@ namespace TaskTracker.Tests.Controller
         }
 
         [Fact]
-        public async void ProjectsController_Edit_WhenDifferentId_ReturnsBadRequest()
+        public async void ProjectsController_Update_WhenDifferentId_ReturnsBadRequest()
         {
             int id = 1;
             var projectDto = A.Fake<ProjectDTO>();
             projectDto.Id = 2;
-            var controller = new ProjectsController(repository, mapper);
+            var controller = new ProjectsController(unitOfWork, mapper);
 
             var result = await controller.Update(id, projectDto);
 
@@ -232,13 +232,13 @@ namespace TaskTracker.Tests.Controller
             result.Result.Should().BeOfType(typeof(BadRequestResult));
         }
         [Fact]
-        public async void ProjectsController_Edit_WhenWrongId_ReturnsBadRequest()
+        public async void ProjectsController_Update_WhenWrongId_ReturnsBadRequest()
         {
             int id = 1;
             var projectDto = A.Fake<ProjectDTO>();
             projectDto.Id = 1;
-            A.CallTo(() => repository.GetById(id)).Returns(null);
-            var controller = new ProjectsController(repository, mapper);
+            A.CallTo(() => unitOfWork.Project.GetById(id)).Returns(null);
+            var controller = new ProjectsController(unitOfWork, mapper);
 
             var result = await controller.Update(id, projectDto);
 

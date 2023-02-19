@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TaskTracker.Data;
 using TaskTracker.Data.DbSeeder;
@@ -15,6 +16,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TaskTrackerDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("TaskTracker")));
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<TaskTrackerDbContext>().AddDefaultTokenProviders();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddDbContext<TaskTrackerDbContext>(options =>
 {

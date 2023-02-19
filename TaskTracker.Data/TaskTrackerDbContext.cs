@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using TaskTracker.Model;
 
 namespace TaskTracker.Data;
-public class TaskTrackerDbContext : DbContext
+public class TaskTrackerDbContext : IdentityDbContext<ApplicationUser>
 {
     public TaskTrackerDbContext( DbContextOptions<TaskTrackerDbContext> options) : base(options) {}
 

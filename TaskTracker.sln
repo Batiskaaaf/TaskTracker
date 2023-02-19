@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskTracker.Api", "TaskTracker.Api\TaskTracker.Api.csproj", "{27B891C4-D3D7-4042-AF28-73361A0B7DEC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{06C7C712-C33C-4EB6-984C-1CDFFE4B293E} = {06C7C712-C33C-4EB6-984C-1CDFFE4B293E}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskTracker.Model", "TaskTracker.Model\TaskTracker.Model.csproj", "{63F8AA49-E9F9-4869-AA96-A98503260027}"
 EndProject
@@ -11,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskTracker.Data", "TaskTra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskTracker.Utility", "TaskTracker.Utility\TaskTracker.Utility.csproj", "{06C7C712-C33C-4EB6-984C-1CDFFE4B293E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskTracker.Tests", "TaskTracker.Tests\TaskTracker.Tests.csproj", "{525C18C7-5184-49F4-A87A-4C59A1E917B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskTracker.Tests", "TaskTracker.Tests\TaskTracker.Tests.csproj", "{525C18C7-5184-49F4-A87A-4C59A1E917B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

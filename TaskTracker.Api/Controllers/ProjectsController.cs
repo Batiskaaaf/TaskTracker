@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TaskTracker.Data;
 using TaskTracker.Data.Repository.IRepository;
 using TaskTracker.Model;
 using TaskTracker.Model.DTO;
-using System.Linq;
 
 namespace TaskTracker.Api.Controllers
 {

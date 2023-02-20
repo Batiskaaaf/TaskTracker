@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskTracker.Data.Repository.IRepository;
@@ -10,6 +11,7 @@ namespace TaskTracker.Api.Controllers
 
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ProjectsController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;

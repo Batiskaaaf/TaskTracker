@@ -6,6 +6,7 @@ namespace TaskTracker.Data.Repository.IRepository
     {
         public IProjectRepository Project { get; }
         public ITaskRepository Task { get; }
+        public IAccountRepository Account { get; }
         void Save();
     }
 }

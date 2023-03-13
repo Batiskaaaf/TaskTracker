@@ -25,13 +25,13 @@ namespace TaskTracker.Api.Controllers
         [HttpPost("signup")]
         public async Task<ActionResult> SignUp([FromBody] SignUpViewModel signUpModel)
         {
-            var result = unitOfWork.Account.SignUpAsync(signUpModel);
+            var result = await unitOfWork.Account.SignUpAsync(signUpModel);
 
-            if(result.Result.Succeeded)
+            if(result.Succeeded)
             {
                 return Ok();
             }
-            return Unauthorized(result.Result.Errors.FirstOrDefault()?.Description);
+            return Unauthorized(result.Errors.FirstOrDefault()?.Description);
         }
 
         ///<summary>

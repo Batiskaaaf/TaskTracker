@@ -19,6 +19,9 @@ namespace TaskTracker.Api.Controllers
             this.mapper = mapper;
         }
 
+        ///<summary>
+        ///User signup method
+        ///</summary>
         [HttpPost("signup")]
         public async Task<ActionResult> SignUp([FromBody] SignUpViewModel signUpModel)
         {
@@ -31,6 +34,9 @@ namespace TaskTracker.Api.Controllers
             return Unauthorized(result.Result.Errors.FirstOrDefault()?.Description);
         }
 
+        ///<summary>
+        ///User login method
+        ///</summary>
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromBody] SignInViewModel signInViewModel)
         {

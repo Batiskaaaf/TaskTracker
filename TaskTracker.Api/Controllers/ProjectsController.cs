@@ -24,6 +24,9 @@ namespace TaskTracker.Api.Controllers
             this.mapper = mapper;
         }
 
+        ///<summary>
+        ///Get all available projects
+        ///</summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProjectDTO>>> Get()
         {
@@ -33,6 +36,10 @@ namespace TaskTracker.Api.Controllers
             return Ok(projectsDTO);
         }
 
+        
+        ///<summary>
+        ///Get project by id
+        ///</summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectDTO>> Get(int id)
         {
@@ -44,6 +51,9 @@ namespace TaskTracker.Api.Controllers
             return Ok(projectDTO);
         }
 
+        ///<summary>
+        ///Get tasks by project id
+        ///</summary>
         [HttpGet("{id}/tasks")]
         public async Task<ActionResult<ICollection<TaskDTO>>> GetProjectTasks (int id)
         {
@@ -55,6 +65,9 @@ namespace TaskTracker.Api.Controllers
             return Ok(tasksDto);
         }
 
+        ///<summary>
+        ///Create new project
+        ///</summary>
         [HttpPost]
         public async Task<ActionResult> Create ([FromBody] ProjectDTO projectDTO)
         {
@@ -67,6 +80,9 @@ namespace TaskTracker.Api.Controllers
             return Ok("Project created succesfully");
         }
 
+        ///<summary>
+        ///Delete project by id
+        ///</summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete (int id)
         {
@@ -79,6 +95,9 @@ namespace TaskTracker.Api.Controllers
             return Ok("Project deleted succesfully");
         }
 
+        ///<summary>
+        ///Updates project by id
+        ///</summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<ProjectDTO>> Update (int id, [FromBody] ProjectDTO projectDTO)
         {

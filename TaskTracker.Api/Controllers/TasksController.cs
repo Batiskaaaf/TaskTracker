@@ -22,7 +22,9 @@ namespace TaskTracker.Api.Controllers
             this.mapper = mapper;
         }
 
-        // GET api/<TasksController>/5
+        ///<summary>
+        ///Get task by id
+        ///</summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskDTO>> Get(int id)
         {
@@ -33,7 +35,9 @@ namespace TaskTracker.Api.Controllers
             return Ok(taskDTO);
         }
 
-        // POST api/<TasksController>
+        ///<summary>
+        ///Create new task
+        ///</summary>
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] TaskDTO taskDTO)
         {
@@ -47,7 +51,9 @@ namespace TaskTracker.Api.Controllers
             return Ok("Task created succesfully");
         }
 
-        // PUT api/<TasksController>/5
+        ///<summary>
+        ///Update task by id
+        ///</summary>
         [HttpPut("{id}")]
         public async Task<ActionResult<TaskDTO>> Update(int id, [FromBody] TaskDTO taskDTO)
         {
@@ -74,7 +80,9 @@ namespace TaskTracker.Api.Controllers
             return Ok("Task edited succesfully");
         }
 
-        // DELETE api/<TasksController>/5
+        ///<summary>
+        ///Delete task by id
+        ///</summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {

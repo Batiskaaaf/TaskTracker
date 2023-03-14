@@ -36,7 +36,7 @@ builder.Services.AddAuthentication(option =>
             ValidateAudience = true,
             ValidAudience = builder.Configuration["JWT:ValidAudience"],
             ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]!)),
         };
     });
 
@@ -76,6 +76,6 @@ void SeedDataBase()
     using (var scope = app.Services.CreateScope())
     {
         var dbSeeder = scope.ServiceProvider.GetService<IDbSeeder>();
-        dbSeeder.Seed();
+        dbSeeder!.Seed();
     }
 }

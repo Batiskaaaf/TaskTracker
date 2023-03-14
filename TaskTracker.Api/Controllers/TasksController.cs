@@ -26,7 +26,7 @@ namespace TaskTracker.Api.Controllers
         ///Get task by id
         ///</summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<TaskDTO>> Get(int id)
+        public ActionResult<TaskDTO> Get(int id)
         {
             var task = unitOfWork.Task.GetFirstOrDefault(t => t.Id == id);
             if(task == null)
@@ -39,7 +39,7 @@ namespace TaskTracker.Api.Controllers
         ///Create new task
         ///</summary>
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] TaskDTO taskDTO)
+        public ActionResult Create([FromBody] TaskDTO taskDTO)
         {
             if (taskDTO == null)
                 return BadRequest(ModelState);
@@ -55,7 +55,7 @@ namespace TaskTracker.Api.Controllers
         ///Update task by id
         ///</summary>
         [HttpPut("{id}")]
-        public async Task<ActionResult<TaskDTO>> Update(int id, [FromBody] TaskDTO taskDTO)
+        public ActionResult<TaskDTO> Update(int id, [FromBody] TaskDTO taskDTO)
         {
             if (taskDTO == null || id != taskDTO.Id)
                 return BadRequest(ModelState);
@@ -84,7 +84,7 @@ namespace TaskTracker.Api.Controllers
         ///Delete task by id
         ///</summary>
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public ActionResult Delete(int id)
         {
             var task = unitOfWork.Task.GetFirstOrDefault(t => t.Id == id);
             if (task == null)

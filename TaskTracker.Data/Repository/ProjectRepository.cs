@@ -26,8 +26,9 @@ namespace TaskTracker.Data.Repository
         }
 
         public ICollection<Model.Task> GetProjectTasks(int id)
-        {
-            return GetFirstOrDefault(p => p.Id == id, "Tasks").Tasks;
+        {   
+            var project = GetFirstOrDefault(p => p.Id == id, "Tasks");
+            return project.Tasks;
         }
 
         public void Update(Project obj)

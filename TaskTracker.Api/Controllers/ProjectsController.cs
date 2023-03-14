@@ -28,7 +28,7 @@ namespace TaskTracker.Api.Controllers
         ///Get all available projects
         ///</summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProjectDTO>>> Get()
+        public ActionResult<IEnumerable<ProjectDTO>> Get()
         {
             var projects = unitOfWork.Project.GetAll();
             var projectsDTO = mapper.Map<List<ProjectDTO>>(projects);
@@ -41,7 +41,7 @@ namespace TaskTracker.Api.Controllers
         ///Get project by id
         ///</summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProjectDTO>> Get(int id)
+        public ActionResult<ProjectDTO> Get(int id)
         {
             var project = unitOfWork.Project.GetById(id);
             if (project == null)
@@ -55,7 +55,7 @@ namespace TaskTracker.Api.Controllers
         ///Get tasks by project id
         ///</summary>
         [HttpGet("{id}/tasks")]
-        public async Task<ActionResult<ICollection<TaskDTO>>> GetProjectTasks (int id)
+        public ActionResult<ICollection<TaskDTO>> GetProjectTasks (int id)
         {
             if (!unitOfWork.Project.Exist(id))
                 return BadRequest();
@@ -69,7 +69,7 @@ namespace TaskTracker.Api.Controllers
         ///Create new project
         ///</summary>
         [HttpPost]
-        public async Task<ActionResult> Create ([FromBody] ProjectDTO projectDTO)
+        public ActionResult Create ([FromBody] ProjectDTO projectDTO)
         {
             if (projectDTO == null)
                 return BadRequest(ModelState);
@@ -84,7 +84,7 @@ namespace TaskTracker.Api.Controllers
         ///Delete project by id
         ///</summary>
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete (int id)
+        public ActionResult Delete (int id)
         {
             var project = unitOfWork.Project.GetById(id);
             if (project == null)
@@ -99,7 +99,7 @@ namespace TaskTracker.Api.Controllers
         ///Updates project by id
         ///</summary>
         [HttpPut("{id}")]
-        public async Task<ActionResult<ProjectDTO>> Update (int id, [FromBody] ProjectDTO projectDTO)
+        public ActionResult<ProjectDTO> Update (int id, [FromBody] ProjectDTO projectDTO)
         {
             if(projectDTO == null || id != projectDTO.Id)
                 return BadRequest();

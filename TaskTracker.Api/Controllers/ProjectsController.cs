@@ -11,7 +11,6 @@ namespace TaskTracker.Api.Controllers
 
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class ProjectsController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;

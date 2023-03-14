@@ -7,6 +7,6 @@ public class TaskTrackerDbContext : IdentityDbContext<ApplicationUser>
 {
     public TaskTrackerDbContext( DbContextOptions<TaskTrackerDbContext> options) : base(options) {}
 
-    public DbSet<Project> Projects { get; set; }
-    public DbSet<Model.Task> Tasks { get; set; }
+    public DbSet<Project> Projects { get; set; } = null!;
+    public DbSet<Model.Task> Tasks { get; set; } = null!;
 }

@@ -8,13 +8,12 @@ public class Task
     public int Id { get; set; }
 
     [Required]
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
     public string? Description { get; set; }
 
     [Required]
-    public string Status { get; set; }
-
+    public required string Status { get; set; }
 
     [DataType(DataType.DateTime)]
     public DateTime CreatedDate { get; set; } = DateTime.Now;
@@ -31,6 +30,6 @@ public class Task
     public int ProjectId { get; set; }
 
     [ForeignKey("ProjectId")]
-    public Project Project { get; set; }
+    public required Project Project { get; set; }
 
 }

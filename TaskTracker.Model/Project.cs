@@ -9,14 +9,14 @@ public class Project
 
 
     [Required]
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
 
     public string? Description { get; set; }
 
 
     [Required]
-    public string Status { get; set; }
+    public required string Status { get; set; }
 
 
     [DataType(DataType.Date)]
@@ -33,5 +33,5 @@ public class Project
     public DateTime? DueDate { get; set; }
 
 
-    public ICollection<Task> Tasks { get; set; }   
+    public ICollection<Task> Tasks { get; set; } = null!;
 }

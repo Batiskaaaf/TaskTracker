@@ -9,24 +9,25 @@ namespace TaskTracker.Model.View
 {
     public class SignUpViewModel
     {
-        [Required]
-        public string FirstName { get; set; }
 
         [Required]
-        public string LastName { get; set; }
+        public required string FirstName { get; set; }
+
+        [Required]
+        public required string LastName { get; set; }
 
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
         [Phone]
-        public string? Number { get; set; }
+        public required string Number { get; set; }
 
         [Required]
         [Compare("ConfirmPassword")]
-        public string Password { get; set; }
+        public required string Password { get; set; }
 
         [Required]
-        public string ConfirmPassword { get; set; }
+        public required string ConfirmPassword { get; set; }
     }
 }

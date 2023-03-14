@@ -75,7 +75,7 @@ namespace TaskTracker.Data.Repository
                     query = query.Include(property);
                 }
             }
-            return query.FirstOrDefault();
+            return query.FirstOrDefault()!;
         }
 
         public void Remove(T entity)

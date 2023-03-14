@@ -47,14 +47,14 @@ namespace TaskTracker.Data.Repository
             var result = await signInManager.PasswordSignInAsync(signInViewModel.Email, signInViewModel.Password, false, false);
 
             if (!result.Succeeded)
-                return null;
+                return null!;
 
             var authClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, signInViewModel.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
-            var authSignInKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["JWT:Secret"]));
+            var authSignInKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["JWT:Secret"]!));
 
             var token = new JwtSecurityToken(
                 issuer: configuration["JWT:ValidIssuer"],

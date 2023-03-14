@@ -71,7 +71,7 @@ namespace TaskTracker.Tests.Controller
         {
             //Arrane
             int id = 1;
-            A.CallTo(() => unitOfWork.Project.GetById(id)).Returns(null);
+            A.CallTo(() => unitOfWork.Project.GetById(id))!.Returns(null);
             var controller = new ProjectsController(unitOfWork, mapper);
 
             //Act
@@ -146,7 +146,7 @@ namespace TaskTracker.Tests.Controller
 
 
             //Act
-            var result = controller.Create(null);
+            var result = controller.Create(null!);
 
             //Assert
             result.Should().NotBeNull();
@@ -177,7 +177,7 @@ namespace TaskTracker.Tests.Controller
         {
             //Arrange
             int id = 0;
-            A.CallTo(() => unitOfWork.Project.GetById(id)).Returns(null);
+            A.CallTo(() => unitOfWork.Project.GetById(id))!.Returns(null);
             var controller = new ProjectsController(unitOfWork, mapper);
 
             //Act
@@ -212,7 +212,7 @@ namespace TaskTracker.Tests.Controller
             int id = 1;
             var controller = new ProjectsController(unitOfWork, mapper);
 
-            var result = controller.Update(id, null);
+            var result = controller.Update(id, null!);
 
             result.Result.Should().NotBeNull();
             result.Result.Should().BeOfType(typeof(BadRequestResult));
@@ -237,7 +237,7 @@ namespace TaskTracker.Tests.Controller
             int id = 1;
             var projectDto = A.Fake<ProjectDTO>();
             projectDto.Id = 1;
-            A.CallTo(() => unitOfWork.Project.GetById(id)).Returns(null);
+            A.CallTo(() => unitOfWork.Project.GetById(id))!.Returns(null);
             var controller = new ProjectsController(unitOfWork, mapper);
 
             var result = controller.Update(id, projectDto);

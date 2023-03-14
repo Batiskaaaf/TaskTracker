@@ -28,7 +28,7 @@ namespace TaskTracker.Tests.Controller
         }          
 
         [Fact]
-        public async void ProjectsController_Get_ReturnsOk()
+        public void ProjectsController_Get_ReturnsOk()
         {
             //Arrange
             var projects = A.Fake<IEnumerator<Project>>();
@@ -37,7 +37,7 @@ namespace TaskTracker.Tests.Controller
             var controller = new ProjectsController(unitOfWork, mapper);
 
             //Act
-            var result = await controller.Get();
+            var result = controller.Get();
 
             //Assert
             result.Should().NotBeNull();
@@ -48,7 +48,7 @@ namespace TaskTracker.Tests.Controller
 
 
         [Fact]
-        public async void ProjectsController_GetId_ReturnOk()
+        public void ProjectsController_GetId_ReturnOk()
         {
             //Arrane
             int id = 1;
@@ -59,7 +59,7 @@ namespace TaskTracker.Tests.Controller
             var controller = new ProjectsController(unitOfWork,mapper);
 
             //Act
-            var result = await controller.Get(id);
+            var result = controller.Get(id);
 
             //Assert
             result.Result.Should().NotBeNull();
@@ -67,15 +67,15 @@ namespace TaskTracker.Tests.Controller
         }
 
         [Fact]
-        public async void ProjectsController_GetId_ReturnNotFound()
+        public void ProjectsController_GetId_ReturnNotFound()
         {
             //Arrane
             int id = 1;
-            A.CallTo(() => unitOfWork.Project.GetById(id)).Returns(null);
+            A.CallTo(() => unitOfWork.Project.GetById(id))!.Returns(null);
             var controller = new ProjectsController(unitOfWork, mapper);
 
             //Act
-            var result = await controller.Get(id);
+            var result = controller.Get(id);
 
             //Assert
             result.Result.Should().NotBeNull();
@@ -86,7 +86,7 @@ namespace TaskTracker.Tests.Controller
 
 
         [Fact]
-        public async void projectController_GetProjectTasks_ReturnOk()
+        public void projectController_GetProjectTasks_ReturnOk()
         {
             int id = 0;
             A.CallTo(() => unitOfWork.Project.Exist(id)).Returns(true);
@@ -97,20 +97,20 @@ namespace TaskTracker.Tests.Controller
             var controller = new ProjectsController(unitOfWork, mapper);
 
 
-            var result = await controller.GetProjectTasks(id);
+            var result = controller.GetProjectTasks(id);
 
             result.Result.Should().NotBeNull();
             result.Result.Should().BeOfType(typeof(OkObjectResult));
         }
 
         [Fact]
-        public async void projectController_GetProjectTasks_ReturnsBadRequest()
+        public void projectController_GetProjectTasks_ReturnsBadRequest()
         {
             int id = 0;
             A.CallTo(() => unitOfWork.Project.Exist(id)).Returns(false);
             var controller = new ProjectsController(unitOfWork, mapper);
 
-            var result = await controller.GetProjectTasks(id);
+            var result = controller.GetProjectTasks(id);
 
             result.Result.Should().NotBeNull();
             result.Result.Should().BeOfType(typeof(BadRequestResult));
@@ -121,7 +121,7 @@ namespace TaskTracker.Tests.Controller
 
 
         [Fact]
-        public async void ProjectsController_Create_ReturnsOk()
+        public void ProjectsController_Create_ReturnsOk()
         {
             //Arrange
             var projectDto = A.Fake<ProjectDTO>();
@@ -131,7 +131,7 @@ namespace TaskTracker.Tests.Controller
 
 
             //Act
-            var result = await controller.Create(projectDto);
+            var result = controller.Create(projectDto);
 
             //Assert
             result.Should().NotBeNull();
@@ -139,14 +139,14 @@ namespace TaskTracker.Tests.Controller
 
         }
         [Fact]
-        public async void ProjectsController_Create_ReturnsBadRequest()
+        public void ProjectsController_Create_ReturnsBadRequest()
         {
             //Arrange
             var controller = new ProjectsController(unitOfWork, mapper);
 
 
             //Act
-            var result = await controller.Create(null);
+            var result = controller.Create(null!);
 
             //Assert
             result.Should().NotBeNull();
@@ -156,7 +156,7 @@ namespace TaskTracker.Tests.Controller
 
 
         [Fact]
-        public async void ProjectsController_Delete_ReturnsOk()
+        public void ProjectsController_Delete_ReturnsOk()
         {
             //Arrange
             int id = 1;
@@ -165,7 +165,7 @@ namespace TaskTracker.Tests.Controller
             var controller = new ProjectsController(unitOfWork, mapper);
 
             //Act
-            var result = await controller.Delete(id);
+            var result = controller.Delete(id);
 
             //Assert
             result.Should().NotBeNull();
@@ -173,15 +173,15 @@ namespace TaskTracker.Tests.Controller
         }
 
         [Fact]
-        public async void ProjectsController_Delete_ReturnsNotFound()
+        public void ProjectsController_Delete_ReturnsNotFound()
         {
             //Arrange
             int id = 0;
-            A.CallTo(() => unitOfWork.Project.GetById(id)).Returns(null);
+            A.CallTo(() => unitOfWork.Project.GetById(id))!.Returns(null);
             var controller = new ProjectsController(unitOfWork, mapper);
 
             //Act
-            var result = await controller.Delete(id);
+            var result = controller.Delete(id);
 
             //Assert
             result.Should().NotBeNull();
@@ -191,7 +191,7 @@ namespace TaskTracker.Tests.Controller
 
 
         [Fact]
-        public async void ProjectsController_Update_ReturnsCreatedAtAction()
+        public void ProjectsController_Update_ReturnsCreatedAtAction()
         {
             int id = 1;
             var projectDto = A.Fake<ProjectDTO>();
@@ -200,47 +200,47 @@ namespace TaskTracker.Tests.Controller
             A.CallTo(() => unitOfWork.Project.GetById(id)).Returns(project);
             var controller = new ProjectsController(unitOfWork,mapper);
 
-            var result = await controller.Update(id, projectDto);
+            var result = controller.Update(id, projectDto);
 
             result.Result.Should().NotBeNull();
             result.Result.Should().BeOfType(typeof(OkObjectResult));
         }
 
         [Fact]
-        public async void ProjectsController_Update_WhenNull_ReturnsBadRequestl()
+        public void ProjectsController_Update_WhenNull_ReturnsBadRequestl()
         {
             int id = 1;
             var controller = new ProjectsController(unitOfWork, mapper);
 
-            var result = await controller.Update(id, null);
+            var result = controller.Update(id, null!);
 
             result.Result.Should().NotBeNull();
             result.Result.Should().BeOfType(typeof(BadRequestResult));
         }
 
         [Fact]
-        public async void ProjectsController_Update_WhenDifferentId_ReturnsBadRequest()
+        public void ProjectsController_Update_WhenDifferentId_ReturnsBadRequest()
         {
             int id = 1;
             var projectDto = A.Fake<ProjectDTO>();
             projectDto.Id = 2;
             var controller = new ProjectsController(unitOfWork, mapper);
 
-            var result = await controller.Update(id, projectDto);
+            var result = controller.Update(id, projectDto);
 
             result.Result.Should().NotBeNull();
             result.Result.Should().BeOfType(typeof(BadRequestResult));
         }
         [Fact]
-        public async void ProjectsController_Update_WhenWrongId_ReturnsBadRequest()
+        public void ProjectsController_Update_WhenWrongId_ReturnsBadRequest()
         {
             int id = 1;
             var projectDto = A.Fake<ProjectDTO>();
             projectDto.Id = 1;
-            A.CallTo(() => unitOfWork.Project.GetById(id)).Returns(null);
+            A.CallTo(() => unitOfWork.Project.GetById(id))!.Returns(null);
             var controller = new ProjectsController(unitOfWork, mapper);
 
-            var result = await controller.Update(id, projectDto);
+            var result = controller.Update(id, projectDto);
 
             result.Result.Should().NotBeNull();
             result.Result.Should().BeOfType(typeof(NotFoundResult));
